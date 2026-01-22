@@ -1,5 +1,9 @@
 grammar TyC;
 
+options {
+	language = Python3;
+}
+
 @lexer::header {
 from lexererr import *
 }
@@ -7,27 +11,21 @@ from lexererr import *
 @lexer::members {
 def emit(self):
     tk = self.type
+    result = super().emit()
     if tk == self.UNCLOSE_STRING:
-        result = super().emit();
-        raise UncloseString(result.text);
+        raise UncloseString(result.text)
     elif tk == self.ILLEGAL_ESCAPE:
-        result = super().emit();
-        raise IllegalEscape(result.text);
+        raise IllegalEscape(result.text)
     elif tk == self.ERROR_CHAR:
-        result = super().emit();
-        raise ErrorToken(result.text);
-    else:
-        return super().emit();
+        raise ErrorToken(result.text)
+    return result
 }
 
-options{
-	language = Python3;
-}
-// TODO: Define grammar rules here
+// ===================== Parser Rules =====================
 
 program: EOF;
 
-// NOTE: 1.1 Reserved Keywords = Don't declare with these names
+// ===================== Keywords =====================
 
 AUTO: 'auto';
 BREAK: 'break';
@@ -46,29 +44,33 @@ SWITCH: 'switch';
 VOID: 'void';
 WHILE: 'while';
 
-// NOTE: 1.2 Operators
+// ===================== Operators =====================
+
 ADD: '+';
 SUB: '-';
 MUL: '*';
 DIV: '/';
 MOD: '%';
+
 EQUAL: '==';
 NOTEQUAL: '!=';
-LESSTHEN: '<';
-LESSTHENEQUAL: '<=';
-GREATERTHEN: '>';
-GREATERTHENEQUAL: '>=';
-// NOTE: 1.3 Logical
+LESS_THAN: '<';
+LESS_EQUAL: '<=';
+GREATER_THAN: '>';
+GREATER_EQUAL: '>=';
+
 AND: '&&';
-NOT: '!';
 OR: '||';
-//  NOTE: 1.4 Icrement/Decrement
+NOT: '!';
+
 INCREMENT: '++';
 DECREMENT: '--';
-// NOTE: 1.5 Assigment
-ASSIGMENT: '=';
-ACESS: '.'; // NOTE: Member access
-// NOTE: 1.6 Seperator
+
+ASSIGNMENT: '=';
+ACCESS: '.';
+
+// ===================== Separators =====================
+
 LSB: '[';
 RSB: ']';
 LB: '{';
@@ -77,21 +79,36 @@ LP: '(';
 RP: ')';
 SEMI: ';';
 COMMA: ',';
-// Fragments
-fragment INTDIGIT: [0-9]+;
+
+// ===================== Literals =====================
+
+INTLIT: DIGIT+;
+
+FLOATLIT: DIGIT+ '.' DIGIT* EXP? | '.' DIGIT+ EXP? | DIGIT+ EXP;
+
+STRINGLIT: '"' ( ~["\\\r\n] | ESC_SEQ)* '"';
+
+// ===================== Identifiers =====================
+
+IDENTIFIER: [a-zA-Z_] [a-zA-Z0-9_]*;
+
+// ===================== Fragments =====================
+
+fragment DIGIT: [0-9];
+fragment EXP: [eE] [+-]? DIGIT+;
 fragment ESC_SEQ: '\\' [btnfr"\\];
-// intflit
-INTLIT: '-'? INTDIGIT;
 
-FLOATLIT:
-	// match: 1.23e4, 5.67E-2
-	INTDIGIT '.' INTDIGIT ([eE] [+-]? INTDIGIT)?
-	| '-'? INTDIGIT [eE] [+-]? INTDIGIT;
+// ===================== Whitespace & Comments =====================
 
-STRINGLIT: '"' ( ~["\\] | ESC_SEQ)* '"';
+WS: [ \t\r\n]+ -> skip;
 
-WS: [ \t\r\n]+ -> skip; // skip spaces, tabs
-// ----------- Stop Here ----------
+LINE_COMMENT: '//' ~[\r\n]* -> skip;
+BLOCK_COMMENT: '/*' .*? '*/' -> skip;
+
+// ===================== Error Handling =====================
+
+ILLEGAL_ESCAPE: '"' ( ~["\\\r\n] | ESC_SEQ)* '\\' .+? '"';
+
+UNCLOSE_STRING: '"' ( ~["\\\r\n] | ESC_SEQ)* ( '\\' . | EOF);
+
 ERROR_CHAR: .;
-ILLEGAL_ESCAPE: .;
-UNCLOSE_STRING: .;

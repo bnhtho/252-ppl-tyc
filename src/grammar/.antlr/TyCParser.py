@@ -10,7 +10,7 @@ else:
 
 def serializedATN():
     return [
-        4,1,49,5,2,0,7,0,1,0,1,0,1,0,0,0,1,0,0,0,3,0,2,1,0,0,0,2,3,5,0,0,
+        4,1,52,5,2,0,7,0,1,0,1,0,1,0,0,0,1,0,0,0,3,0,2,1,0,0,0,2,3,5,0,0,
         1,3,1,1,0,0,0,0
     ]
 
@@ -29,18 +29,19 @@ class TyCParser ( Parser ):
                      "'int'", "'return'", "'string'", "'struct'", "'switch'", 
                      "'void'", "'while'", "'+'", "'-'", "'*'", "'/'", "'%'", 
                      "'=='", "'!='", "'<'", "'<='", "'>'", "'>='", "'&&'", 
-                     "'!'", "'||'", "'++'", "'--'", "'='", "'.'", "'['", 
+                     "'||'", "'!'", "'++'", "'--'", "'='", "'.'", "'['", 
                      "']'", "'{'", "'}'", "'('", "')'", "';'", "','" ]
 
     symbolicNames = [ "<INVALID>", "AUTO", "BREAK", "CASE", "CONTINUE", 
                       "DEFAULT", "ELSE", "FLOAT", "FOR", "IF", "INT", "RETURN", 
                       "STRING", "STRUCT", "SWITCH", "VOID", "WHILE", "ADD", 
-                      "SUB", "MUL", "DIV", "MOD", "EQUAL", "NOTEQUAL", "LESSTHEN", 
-                      "LESSTHENEQUAL", "GREATERTHEN", "GREATERTHENEQUAL", 
-                      "AND", "NOT", "OR", "INCREMENT", "DECREMENT", "ASSIGMENT", 
-                      "ACESS", "LSB", "RSB", "LB", "RB", "LP", "RP", "SEMI", 
-                      "COMMA", "INTLIT", "FLOATLIT", "STRINGLIT", "WS", 
-                      "ERROR_CHAR", "ILLEGAL_ESCAPE", "UNCLOSE_STRING" ]
+                      "SUB", "MUL", "DIV", "MOD", "EQUAL", "NOTEQUAL", "LESS_THAN", 
+                      "LESS_EQUAL", "GREATER_THAN", "GREATER_EQUAL", "AND", 
+                      "OR", "NOT", "INCREMENT", "DECREMENT", "ASSIGNMENT", 
+                      "ACCESS", "LSB", "RSB", "LB", "RB", "LP", "RP", "SEMI", 
+                      "COMMA", "INTLIT", "FLOATLIT", "STRINGLIT", "IDENTIFIER", 
+                      "WS", "LINE_COMMENT", "BLOCK_COMMENT", "ILLEGAL_ESCAPE", 
+                      "UNCLOSE_STRING", "ERROR_CHAR" ]
 
     RULE_program = 0
 
@@ -70,17 +71,17 @@ class TyCParser ( Parser ):
     MOD=21
     EQUAL=22
     NOTEQUAL=23
-    LESSTHEN=24
-    LESSTHENEQUAL=25
-    GREATERTHEN=26
-    GREATERTHENEQUAL=27
+    LESS_THAN=24
+    LESS_EQUAL=25
+    GREATER_THAN=26
+    GREATER_EQUAL=27
     AND=28
-    NOT=29
-    OR=30
+    OR=29
+    NOT=30
     INCREMENT=31
     DECREMENT=32
-    ASSIGMENT=33
-    ACESS=34
+    ASSIGNMENT=33
+    ACCESS=34
     LSB=35
     RSB=36
     LB=37
@@ -92,10 +93,13 @@ class TyCParser ( Parser ):
     INTLIT=43
     FLOATLIT=44
     STRINGLIT=45
-    WS=46
-    ERROR_CHAR=47
-    ILLEGAL_ESCAPE=48
-    UNCLOSE_STRING=49
+    IDENTIFIER=46
+    WS=47
+    LINE_COMMENT=48
+    BLOCK_COMMENT=49
+    ILLEGAL_ESCAPE=50
+    UNCLOSE_STRING=51
+    ERROR_CHAR=52
 
     def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
         super().__init__(input, output)
