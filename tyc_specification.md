@@ -642,7 +642,9 @@ or
 if (<expression>) <statement> else <statement>
 ```
 
-where `<expression>` evaluates to an **int** value (0 is false, non-zero is true). If the expression results in non-zero then the first `<statement>` is executed. If `<expression>` evaluates to 0 and an else clause is specified then the `<statement>` following `else` is executed. If no else clause exists and expression is 0 then the if statement is passed over.  
+where `<expression>` evaluates to an **int** value (0 is false, non-zero is true). If the expression results in non-zero then the first `<statement>` is executed. If `<expression>` evaluates to 0 and an else clause is specified then the `<statement>` following `else` is executed. If no else clause exists and expression is 0 then the if statement is passed over.
+
+When nested if statements are used, an `else` clause is always associated with the nearest (innermost) `if` statement that does not already have an `else` clause. For example, in `if (x) if (y) a; else b;`, the `else` is associated with `if (y)`, not `if (x)`.
 
 The following is an example of an if statement:
 ```tyc
