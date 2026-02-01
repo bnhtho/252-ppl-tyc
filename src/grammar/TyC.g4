@@ -112,3 +112,33 @@ ILLEGAL_ESCAPE: '"' ( ~["\\\r\n] | ESC_SEQ)* '\\' .+? '"';
 UNCLOSE_STRING: '"' ( ~["\\\r\n] | ESC_SEQ)* ( '\\' . | EOF);
 
 ERROR_CHAR: .;
+
+// Parser Rules expr: Expression rules: + - / * mod, =, ==, !=, <, <=, >, >=, &&, ||, ! Expression
+// Arithmetic
+
+expr:
+	expr ADD expr
+	| expr SUB expr
+	| expr MUL expr
+	| expr DIV expr
+	| expr MOD expr
+	| expr EQUAL expr
+	| expr NOTEQUAL expr
+	| expr LESS_THAN expr
+	| expr LESS_EQUAL expr
+	| expr GREATER_THAN expr
+	| expr GREATER_EQUAL expr
+	| expr AND expr
+	| expr OR expr
+	| NOT expr;
+type: INT | FLOAT | STRING | VOID | IDENTIFIER;
+varDecl:
+	type IDENTIFIER (ASSIGNMENT expr)? SEMI
+	| AUTO IDENTIFIER (ASSIGNMENT expr)? SEMI;
+
+// Struct decl
+strucDecl:
+	type IDENTIFIER SEMI
+	| type IDENTIFIER ASSIGNMENT expr SEMI;
+
+// EXAMPLE MATH: int x; float y; struct Person p; Person q; Person r = {1, 2};
